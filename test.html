@@ -4,10 +4,10 @@
     <title>Trigger AWS Lambda</title>
     <script>
     function triggerLambda() {
-        const url = 'https://v2uh2lpxh3.execute-api.ap-southeast-2.amazonaws.com/default/SendSurvey';
+        const url = 'https://m83in5olml.execute-api.ap-southeast-2.amazonaws.com/default/GetSetNumber';
         const documentIdInput = document.getElementById("documentId");
         const data = { 
-            text: 'Hello World from html test',
+            text: 'Hello World from test.html',
             document_id: documentIdInput.value,
         };
 
