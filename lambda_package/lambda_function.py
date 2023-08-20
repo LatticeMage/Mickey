@@ -26,6 +26,20 @@ async def append_text_async(document_id, text_to_append):
 
     service.documents().batchUpdate(documentId=document_id, body={'requests': requests}).execute()
 
+async def get_document_content_async(document_id):
+    creds = Credentials.from_service_account_file('get-survey-c8bf2f366d30.json', scopes=[
+        'https://www.googleapis.com/auth/documents',
+        'https://www.googleapis.com/auth/drive'
+    ])
+    service = build('docs', 'v1', credentials=creds)
+    document = service.documents().get(documentId=document_id).execute()
+    content = ""
+    for item in document['body']['content']:
+        if 'paragraph' in item:
+            for element in item['paragraph']['elements']:
+                content += element.get('textRun', {}).get('content', '')
+    return content
+
 def lambda_handler(event, context):
     headers = {
         'Access-Control-Allow-Headers': 'content-type',
@@ -35,11 +49,29 @@ def lambda_handler(event, context):
     }
 
     # Preflight request. Reply successfully:
-    if event['httpMethod'] == 'OPTIONS' :
+    if event['httpMethod'] == 'OPTIONS':
         return {
             'statusCode': 200,
             'headers': headers,
             'body': 'preflight successful'
+        }
+
+    # Handling GET request
+    if event['httpMethod'] == 'GET':
+        document_id = event.get('queryStringParameters', {}).get('document_id', None)
+        if not document_id:
+            print("No 'document_id' provided")
+            return {
+                'statusCode': 400,
+                'headers': headers,
+                'body': json.dumps("No 'document_id' provided in the request")
+            }
+        loop = asyncio.get_event_loop()
+        document_content = loop.run_until_complete(get_document_content_async(document_id))
+        return {
+            'statusCode': 200,
+            'headers': headers,
+            'body': json.dumps({"content": document_content})
         }
 
     # Check if 'body' is in the event and try to extract 'text' and 'document_id'

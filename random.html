@@ -5,10 +5,12 @@
     <script>
     function triggerLambda() {
         const url = 'https://m83in5olml.execute-api.ap-southeast-2.amazonaws.com/default/GetSetNumber';
-        const documentIdInput = document.getElementById("documentId");
+        const documentId = "13LwidOuE1Y1MFaZ7uwVlh9zfMuf3RfxUoFGuCg6j_fI"; // Fixed document ID
+        const textInput = document.getElementById("textToAppend"); // Getting the textarea's input
+        
         const data = { 
-            text: 'Hello World from random.html',
-            document_id: documentIdInput.value,
+            text: textInput.value, // What you typed
+            document_id: documentId,
         };
 
         fetch(url, {
@@ -26,7 +28,7 @@
     </script>
 </head>
 <body>
-    <input type="text" id="documentId" placeholder="Enter Document ID">
-    <button onclick="triggerLambda()">Send Hello World to Lambda</button>
+    <textarea id="textToAppend" placeholder="Type text to append to the document..."></textarea> <!-- Textarea for you to type in -->
+    <button onclick="triggerLambda()">Send Typed Text to Lambda</button>
 </body>
 </html>
