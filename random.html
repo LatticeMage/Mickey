@@ -5,11 +5,11 @@
     <script>
     function triggerLambda() {
         const url = 'https://m83in5olml.execute-api.ap-southeast-2.amazonaws.com/default/GetSetNumber';
-        const documentId = "13LwidOuE1Y1MFaZ7uwVlh9zfMuf3RfxUoFGuCg6j_fI"; // Fixed document ID
-        const textInput = document.getElementById("textToAppend"); // Getting the textarea's input
-        
+        const documentId = "13LwidOuE1Y1MFaZ7uwVlh9zfMuf3RfxUoFGuCg6j_fI";
+        const textInput = document.getElementById("textToAppend");
+
         const data = { 
-            text: textInput.value, // What you typed
+            text: textInput.value,
             document_id: documentId,
         };
 
@@ -25,10 +25,27 @@
             console.error('Error:', error);
         });
     }
+
+    function fetchDocumentContent() {
+        const url = `https://m83in5olml.execute-api.ap-southeast-2.amazonaws.com/default/GetSetNumber?document_id=13LwidOuE1Y1MFaZ7uwVlh9zfMuf3RfxUoFGuCg6j_fI`;
+
+        fetch(url, {
+            method: 'GET'
+        }).then(response => response.json())
+          .then(data => {
+              const contentDiv = document.getElementById("documentContent");
+              contentDiv.textContent = data.content; // Display the content in the div
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
     </script>
 </head>
 <body>
-    <textarea id="textToAppend" placeholder="Type text to append to the document..."></textarea> <!-- Textarea for you to type in -->
+    <textarea id="textToAppend" placeholder="Type text to append to the document..."></textarea>
     <button onclick="triggerLambda()">Send Typed Text to Lambda</button>
+    <button onclick="fetchDocumentContent()">Fetch Document Content</button>
+    <div id="documentContent" style="margin-top: 20px; border: 1px solid #ccc; padding: 10px;"></div>
 </body>
 </html>
