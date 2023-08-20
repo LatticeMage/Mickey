@@ -1,31 +1,14 @@
-
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Increment Number</title>
+    <title>Trigger AWS Lambda</title>
     <script>
-    const url = 'https://m83in5olml.execute-api.ap-southeast-2.amazonaws.com/default/GetSetNumber';
-    const DOCUMENT_ID = '13LwidOuE1Y1MFaZ7uwVlh9zfMuf3RfxUoFGuCg6j_fI';  // Fixed Google Doc ID
-
-    // Function to fetch and display the current number from the Google Doc
-    function fetchCurrentNumber() {
-        fetch(url + '?document_id=' + DOCUMENT_ID, {
-            method: 'GET'
-        }).then(response => response.json())
-          .then(data => {
-              document.getElementById("currentNumber").textContent = data;
-          }).catch((error) => {
-              console.error('Error fetching number:', error);
-          });
-    }
-
-    // Function to increment the number and send it back to the Google Doc
-    function incrementAndSend() {
-        let currentNumber = parseInt(document.getElementById("currentNumber").textContent);
-        currentNumber += 1;
+    function triggerLambda() {
+        const url = 'https://m83in5olml.execute-api.ap-southeast-2.amazonaws.com/default/GetSetNumber';
+        const documentIdInput = document.getElementById("documentId");
         const data = { 
-            text: currentNumber.toString(),
-            document_id: DOCUMENT_ID  // Sending the document ID in the request
+            text: 'Hello World from random.html',
+            document_id: documentIdInput.value,
         };
 
         fetch(url, {
@@ -35,21 +18,15 @@
                 'Content-Type': 'application/json'
             }
         }).then(response => response.json())
-          .then(data => {
-              console.log(data);
-              fetchCurrentNumber();
-          }).catch((error) => {
-              console.error('Error:', error);
-          });
+          .then(data => console.log(data))
+          .catch((error) => {
+            console.error('Error:', error);
+        });
     }
-
-    // Fetch the current number on page load
-    window.onload = fetchCurrentNumber;
     </script>
 </head>
 <body>
-    <h3>Current Number in Google Doc:</h3>
-    <div id="currentNumber"></div>
-    <button onclick="incrementAndSend()">Increment and Update Number</button>
+    <input type="text" id="documentId" placeholder="Enter Document ID">
+    <button onclick="triggerLambda()">Send Hello World to Lambda</button>
 </body>
 </html>
