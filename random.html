@@ -6,7 +6,11 @@
     <script>
         const documentId = "13LwidOuE1Y1MFaZ7uwVlh9zfMuf3RfxUoFGuCg6j_fI";
         const url = `https://m83in5olml.execute-api.ap-southeast-2.amazonaws.com/default/GetSetNumber?document_id=${documentId}`;
-        const urls = ["https://youtube.com", "https://google.com", "https://yahoo.com"];
+        const urls = [
+            "https://youtube.com", 
+            "https://google.com", 
+            "https://yahoo.com"
+        ];
 
         async function incrementDocumentValueAndOpenURL() {
             try {
@@ -18,7 +22,7 @@
                 let currentValue = parseInt(data.content.trim());
 
                 // Increment the value
-                currentValue += 1;
+                currentValue = (currentValue + 1) % urls.length;
 
                 // Update the document with the incremented value
                 const payload = {
