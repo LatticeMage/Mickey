@@ -3,49 +3,46 @@
 <head>
     <title>Trigger AWS Lambda</title>
     <script>
-    function triggerLambda() {
-        const url = 'https://m83in5olml.execute-api.ap-southeast-2.amazonaws.com/default/GetSetNumber';
-        const documentId = "13LwidOuE1Y1MFaZ7uwVlh9zfMuf3RfxUoFGuCg6j_fI";
-        const textInput = document.getElementById("textToAppend");
+    const documentId = "13LwidOuE1Y1MFaZ7uwVlh9zfMuf3RfxUoFGuCg6j_fI";
+    const url = `https://m83in5olml.execute-api.ap-southeast-2.amazonaws.com/default/GetSetNumber?document_id=${documentId}`;
 
-        const data = { 
-            text: textInput.value,
-            document_id: documentId,
-        };
+    async function incrementDocumentValue() {
+        try {
+            // Fetch current content of the document
+            let response = await fetch(url, { method: 'GET' });
+            let data = await response.json();
+            let currentValue = parseInt(data.content.trim());
 
-        fetch(url, {
-            method: 'POST', 
-            body: JSON.stringify(data), 
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }).then(response => response.json())
-          .then(data => console.log(data))
-          .catch((error) => {
+            // Increment the value
+            currentValue += 1;
+
+            // Update the document with the incremented value
+            const payload = {
+                text: currentValue.toString(),
+                document_id: documentId
+            };
+            response = await fetch(url, {
+                method: 'POST', 
+                body: JSON.stringify(payload), 
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            data = await response.json();
+            console.log(data);
+
+            // Update the content on the page
+            const contentDiv = document.getElementById("documentContent");
+            contentDiv.textContent = currentValue;
+        } catch (error) {
             console.error('Error:', error);
-        });
+        }
     }
 
-    function fetchDocumentContent() {
-        const url = `https://m83in5olml.execute-api.ap-southeast-2.amazonaws.com/default/GetSetNumber?document_id=13LwidOuE1Y1MFaZ7uwVlh9zfMuf3RfxUoFGuCg6j_fI`;
-
-        fetch(url, {
-            method: 'GET'
-        }).then(response => response.json())
-          .then(data => {
-              const contentDiv = document.getElementById("documentContent");
-              contentDiv.textContent = data.content; // Display the content in the div
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-        });
-    }
     </script>
 </head>
 <body>
-    <textarea id="textToAppend" placeholder="Type text to append to the document..."></textarea>
-    <button onclick="triggerLambda()">Send Typed Text to Lambda</button>
-    <button onclick="fetchDocumentContent()">Fetch Document Content</button>
+    <button onclick="incrementDocumentValue()">Increment</button>
     <div id="documentContent" style="margin-top: 20px; border: 1px solid #ccc; padding: 10px;"></div>
 </body>
 </html>

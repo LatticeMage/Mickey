@@ -4,7 +4,7 @@ import json
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 
-async def append_text_async(document_id, text_to_append):
+async def set_text_async(document_id, text_to_set):
     creds = Credentials.from_service_account_file('get-survey-c8bf2f366d30.json', scopes=[
         'https://www.googleapis.com/auth/documents',
         'https://www.googleapis.com/auth/drive'
@@ -12,14 +12,26 @@ async def append_text_async(document_id, text_to_append):
     service = build('docs', 'v1', credentials=creds)
 
     document = service.documents().get(documentId=document_id).execute()
+    end_index = document['body']['content'][-1]['endIndex']
 
+    # Requests to delete the content and set new content
     requests = [
+        # Delete existing content
+        {
+            'deleteContentRange': {
+                'range': {
+                    'startIndex': 1,
+                    'endIndex': end_index-1
+                }
+            }
+        },
+        # Insert new content
         {
             'insertText': {
                 'location': {
-                    'index': document['body']['content'][-1]['endIndex']-1,
+                    'index': 1
                 },
-                'text': text_to_append
+                'text': text_to_set
             }
         }
     ]
@@ -95,7 +107,7 @@ def lambda_handler(event, context):
             text_to_append = body['text']
             document_id = body['document_id']
             loop = asyncio.get_event_loop()
-            loop.run_until_complete(append_text_async(document_id, text_to_append))
+            loop.run_until_complete(set_text_async(document_id, text_to_append))
 
             message = "Text added to Google Doc file"
             print(message)

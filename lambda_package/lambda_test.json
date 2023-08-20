@@ -2,3 +2,10 @@
   "httpMethod": "POST",
   "body": "{\"text\": \"This is a test text from json.\", \"document_id\": \"13LwidOuE1Y1MFaZ7uwVlh9zfMuf3RfxUoFGuCg6j_fI\"}"
 }
+
+{
+  "httpMethod": "GET",
+  "queryStringParameters": {
+    "document_id": "13LwidOuE1Y1MFaZ7uwVlh9zfMuf3RfxUoFGuCg6j_fI"
+  }
+}

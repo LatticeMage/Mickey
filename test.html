@@ -5,10 +5,12 @@
     <script>
     function triggerLambda() {
         const url = 'https://m83in5olml.execute-api.ap-southeast-2.amazonaws.com/default/GetSetNumber';
-        const documentIdInput = document.getElementById("documentId");
+        const documentId = "13LwidOuE1Y1MFaZ7uwVlh9zfMuf3RfxUoFGuCg6j_fI";
+        const textInput = document.getElementById("textToAppend");
+
         const data = { 
-            text: 'Hello World from test.html',
-            document_id: documentIdInput.value,
+            text: textInput.value,
+            document_id: documentId,
         };
 
         fetch(url, {
@@ -23,10 +25,27 @@
             console.error('Error:', error);
         });
     }
+
+    function fetchDocumentContent() {
+        const url = `https://m83in5olml.execute-api.ap-southeast-2.amazonaws.com/default/GetSetNumber?document_id=13LwidOuE1Y1MFaZ7uwVlh9zfMuf3RfxUoFGuCg6j_fI`;
+
+        fetch(url, {
+            method: 'GET'
+        }).then(response => response.json())
+          .then(data => {
+              const contentDiv = document.getElementById("documentContent");
+              contentDiv.textContent = data.content; // Display the content in the div
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
     </script>
 </head>
 <body>
-    <input type="text" id="documentId" placeholder="Enter Document ID">
-    <button onclick="triggerLambda()">Send Hello World to Lambda</button>
+    <textarea id="textToAppend" placeholder="Type text to append to the document..."></textarea>
+    <button onclick="triggerLambda()">Send Typed Text to Lambda</button>
+    <button onclick="fetchDocumentContent()">Fetch Document Content</button>
+    <div id="documentContent" style="margin-top: 20px; border: 1px solid #ccc; padding: 10px;"></div>
 </body>
 </html>
