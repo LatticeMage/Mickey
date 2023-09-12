@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Trigger AWS Lambda</title>
+    <script>
+        const urls = [
+            "https://www.instagram.com/ar/512129826906927",
+            "https://www.instagram.com/ar/2973487789329932",
+            "https://www.instagram.com/ar/356648469081984",
+            "https://www.instagram.com/ar/219038786283547",
+            "https://www.instagram.com/ar/293027175460398",
+            "https://www.instagram.com/ar/1493759487482981",
+            "https://www.instagram.com/ar/842920952829205"
+        ];
+
+        // Local variable to maintain the counter
+        let currentValue = 0;
+
+        function incrementValueAndOpenURL() {
+            try {
+                // Increment the value
+                currentValue = (currentValue + 1) % urls.length;
+
+                // Update the content on the page
+                const contentDiv = document.getElementById("documentContent");
+                contentDiv.textContent = currentValue;
+
+                // Open the URL in a new window or tab
+                const urlToOpen = urls[currentValue];
+                window.open(urlToOpen, "_blank");
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+    </script>
+</head>
+
+<body>
+    <button onclick="incrementValueAndOpenURL()">Jump to URL</button>
+    <div id="documentContent" style="margin-top: 20px; border: 1px solid #ccc; padding: 10px;"></div>
+</body>
+
+</html>
