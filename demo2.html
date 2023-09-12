@@ -4,8 +4,6 @@
 <head>
     <title>Trigger AWS Lambda</title>
     <script>
-        const documentId = "1vJCoGpimoCrEFpEgJsNMZ87h1Fau1XKZ_g0dh6j_Zv8";
-        const url = `https://m83in5olml.execute-api.ap-southeast-2.amazonaws.com/default/GetSetNumber?document_id=${documentId}`;
         const urls = [
             "https://www.instagram.com/ar/512129826906927",
             "https://www.instagram.com/ar/2973487789329932",
@@ -16,32 +14,15 @@
             "https://www.instagram.com/ar/842920952829205"
         ];
 
-        async function incrementDocumentValueAndOpenURL() {
+        function incrementValueAndOpenURL() {
             try {
-                // Fetch current content of the document
-                let response = await fetch(url, {
-                    method: 'GET'
-                });
-                let data = await response.json();
-                let currentValue = parseInt(data.content.trim());
+                let currentValue = parseInt(localStorage.getItem('redirectIndex') || 0);
 
                 // Increment the value
                 currentValue = (currentValue + 1) % urls.length;
 
-                // Update the document with the incremented value
-                const payload = {
-                    text: currentValue.toString(),
-                    document_id: documentId
-                };
-                response = await fetch(url, {
-                    method: 'POST',
-                    body: JSON.stringify(payload),
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                });
-                data = await response.json();
-                console.log(data);
+                // Store incremented value back to localStorage
+                localStorage.setItem('redirectIndex', currentValue.toString());
 
                 // Redirect to the URL based on the incremented value
                 window.location.href = urls[currentValue];
@@ -51,7 +32,7 @@
         }
 
         // Auto-trigger the function when the page loads
-        window.onload = incrementDocumentValueAndOpenURL;
+        window.onload = incrementValueAndOpenURL;
 
     </script>
 </head>

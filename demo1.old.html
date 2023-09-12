@@ -4,6 +4,8 @@
 <head>
     <title>Trigger AWS Lambda</title>
     <script>
+        const documentId = "13LwidOuE1Y1MFaZ7uwVlh9zfMuf3RfxUoFGuCg6j_fI";
+        const url = `https://m83in5olml.execute-api.ap-southeast-2.amazonaws.com/default/GetSetNumber?document_id=${documentId}`;
         const urls = [
             "https://merch.riotgames.com/en-us/collection/kda-allout-collection/?utm_source=lolweb&utm_medium=promo_module&utm_campaign=KDA&utm_content=Collection-KDAAllOut",
             "https://music.youtube.com/watch?v=Y8kMcf4kyIk",
@@ -23,15 +25,33 @@
             "https://universe.leagueoflegends.com/en_US/comic/kdacomic/issue-1/0/"
         ];
         
-        function incrementValueAndOpenURL() {
+
+        async function incrementDocumentValueAndOpenURL() {
             try {
-                let currentValue = parseInt(localStorage.getItem('redirectIndex') || 0);
+                // Fetch current content of the document
+                let response = await fetch(url, {
+                    method: 'GET'
+                });
+                let data = await response.json();
+                let currentValue = parseInt(data.content.trim());
 
                 // Increment the value
                 currentValue = (currentValue + 1) % urls.length;
 
-                // Store incremented value back to localStorage
-                localStorage.setItem('redirectIndex', currentValue.toString());
+                // Update the document with the incremented value
+                const payload = {
+                    text: currentValue.toString(),
+                    document_id: documentId
+                };
+                response = await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify(payload),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                data = await response.json();
+                console.log(data);
 
                 // Redirect to the URL based on the incremented value
                 window.location.href = urls[currentValue];
@@ -41,7 +61,7 @@
         }
 
         // Auto-trigger the function when the page loads
-        window.onload = incrementValueAndOpenURL;
+        window.onload = incrementDocumentValueAndOpenURL;
 
     </script>
 </head>
