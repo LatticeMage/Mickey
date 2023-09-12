@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Trigger AWS Lambda</title>
+    <script>
+        const urls = [
+            "https://www.instagram.com/ar/512129826906927",
+            "https://www.instagram.com/ar/2973487789329932",
+            "https://www.instagram.com/ar/356648469081984",
+            "https://www.instagram.com/ar/219038786283547",
+            "https://www.instagram.com/ar/293027175460398",
+            "https://www.instagram.com/ar/1493759487482981",
+            "https://www.instagram.com/ar/842920952829205"
+        ];
+
+        function incrementValueAndOpenURL() {
+            try {
+                let currentValue = parseInt(localStorage.getItem('redirectIndex') || 0);
+
+                // Increment the value
+                currentValue = (currentValue + 1) % urls.length;
+
+                // Store incremented value back to localStorage
+                localStorage.setItem('redirectIndex', currentValue.toString());
+
+                // Redirect to the URL based on the incremented value
+                window.location.href = urls[currentValue];
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Auto-trigger the function when the page loads
+        window.onload = incrementValueAndOpenURL;
+
+    </script>
+</head>
+
+<body>
+    <!-- The body will be empty because we are redirecting as soon as the page loads. -->
+</body>
+
+</html>
