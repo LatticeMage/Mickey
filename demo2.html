@@ -25,6 +25,9 @@
                 let data = await response.json();
                 let currentValue = parseInt(data.content.trim());
 
+                // Increment the value
+                currentValue = (currentValue + 1) % urls.length;
+
                 // Update the document with the incremented value
                 const payload = {
                     text: currentValue.toString(),
@@ -40,17 +43,8 @@
                 data = await response.json();
                 console.log(data);
 
-                // Update the content on the page
-                const contentDiv = document.getElementById("documentContent");
-                contentDiv.textContent = currentValue;
-
-                // Open the URL in a new window or tab
-                const urlToOpen = urls[currentValue % urls.length];
-                
-                // Increment the value
-                currentValue = (currentValue + 1) % urls.length;
-                
-                window.open(urlToOpen, "_blank");
+                // Redirect to the URL based on the incremented value
+                window.location.href = urls[currentValue];
             } catch (error) {
                 console.error('Error:', error);
             }
@@ -63,7 +57,7 @@
 </head>
 
 <body>
-    <div id="documentContent" style="margin-top: 20px; border: 1px solid #ccc; padding: 10px;"></div>
+    <!-- The body will be empty because we are redirecting as soon as the page loads. -->
 </body>
 
 </html>
