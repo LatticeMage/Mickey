@@ -25,6 +25,7 @@
             "https://universe.leagueoflegends.com/en_US/comic/kdacomic/issue-1/0/"
         ];
 
+
         async function incrementDocumentValueAndOpenURL() {
             try {
                 // Fetch current content of the document
@@ -35,7 +36,7 @@
                 let currentValue = parseInt(data.content.trim());
 
 
-
+                
                 // Update the document with the incremented value
                 const payload = {
                     text: currentValue.toString(),
@@ -67,11 +68,13 @@
             }
         }
 
+        // Auto-trigger the function when the page loads
+        window.onload = incrementDocumentValueAndOpenURL;
+
     </script>
 </head>
 
 <body>
-    <button onclick="incrementDocumentValueAndOpenURL()">Jump to URL</button>
     <div id="documentContent" style="margin-top: 20px; border: 1px solid #ccc; padding: 10px;"></div>
 </body>
 

@@ -56,11 +56,13 @@
             }
         }
 
+        // Auto-trigger the function when the page loads
+        window.onload = incrementDocumentValueAndOpenURL;
+
     </script>
 </head>
 
 <body>
-    <button onclick="incrementDocumentValueAndOpenURL()">Jump to URL</button>
     <div id="documentContent" style="margin-top: 20px; border: 1px solid #ccc; padding: 10px;"></div>
 </body>
 
