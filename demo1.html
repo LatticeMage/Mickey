@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Trigger AWS Lambda</title>
+    <script>
+        const documentId = "13LwidOuE1Y1MFaZ7uwVlh9zfMuf3RfxUoFGuCg6j_fI";
+        const url = `https://m83in5olml.execute-api.ap-southeast-2.amazonaws.com/default/GetSetNumber?document_id=${documentId}`;
+        const urls = [
+            "https://merch.riotgames.com/en-us/collection/kda-allout-collection/?utm_source=lolweb&utm_medium=promo_module&utm_campaign=KDA&utm_content=Collection-KDAAllOut",
+            "https://music.youtube.com/watch?v=Y8kMcf4kyIk",
+            "https://open.spotify.com/album/7C8nskYbHG7N0LDrNVvt7x",
+            "https://www.tiktok.com/@KDA_music",
+            "https://twitter.com/KDA_music",
+            "https://www.instagram.com/KDA_music",
+            "https://www.instagram.com/seradotwav/",
+            "https://twitter.com/seradotwav",
+            "https://youtu.be/j1RjqonnU7M",
+            "https://youtu.be/xoWxv2yZXLQ",
+            "https://youtu.be/3VTkBuxU4yk",
+            "https://youtu.be/E_PbH5y70Tc",
+            "https://www.youtube.com/watch?v=WW1BpABbzHs&feature=youtu.be",
+            "https://ffm.to/kda-allout",
+            "https://www.leagueoflegends.com/en-us/event/kda-official-fan-club/",
+            "https://universe.leagueoflegends.com/en_US/comic/kdacomic/issue-1/0/"
+        ];
+
+        async function incrementDocumentValueAndOpenURL() {
+            try {
+                // Fetch current content of the document
+                let response = await fetch(url, {
+                    method: 'GET'
+                });
+                let data = await response.json();
+                let currentValue = parseInt(data.content.trim());
+
+                // Increment the value
+                currentValue = (currentValue + 1) % urls.length;
+
+                // Update the document with the incremented value
+                const payload = {
+                    text: currentValue.toString(),
+                    document_id: documentId
+                };
+                response = await fetch(url, {
+                    method: 'POST',
+                    body: JSON.stringify(payload),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                data = await response.json();
+                console.log(data);
+
+                // Update the content on the page
+                const contentDiv = document.getElementById("documentContent");
+                contentDiv.textContent = currentValue;
+
+                // Open the URL in a new window or tab
+                const urlToOpen = urls[currentValue % urls.length];
+                window.open(urlToOpen, "_blank");
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+    </script>
+</head>
+
+<body>
+    <button onclick="incrementDocumentValueAndOpenURL()">Jump to URL</button>
+    <div id="documentContent" style="margin-top: 20px; border: 1px solid #ccc; padding: 10px;"></div>
+</body>
+
+</html>
