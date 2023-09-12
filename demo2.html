@@ -25,9 +25,6 @@
                 let data = await response.json();
                 let currentValue = parseInt(data.content.trim());
 
-                // Increment the value
-                currentValue = (currentValue + 1) % urls.length;
-
                 // Update the document with the incremented value
                 const payload = {
                     text: currentValue.toString(),
@@ -49,6 +46,10 @@
 
                 // Open the URL in a new window or tab
                 const urlToOpen = urls[currentValue % urls.length];
+                
+                // Increment the value
+                currentValue = (currentValue + 1) % urls.length;
+                
                 window.open(urlToOpen, "_blank");
             } catch (error) {
                 console.error('Error:', error);

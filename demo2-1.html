@@ -20,7 +20,7 @@
         function incrementValueAndOpenURL() {
             try {
                 // Increment the value
-                currentValue = (currentValue + 1) % urls.length;
+                
 
                 // Update the content on the page
                 const contentDiv = document.getElementById("documentContent");
@@ -29,6 +29,7 @@
                 // Open the URL in a new window or tab
                 const urlToOpen = urls[currentValue];
                 window.open(urlToOpen, "_blank");
+                currentValue = (currentValue + 1) % urls.length;
             } catch (error) {
                 console.error('Error:', error);
             }
