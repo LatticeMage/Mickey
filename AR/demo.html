@@ -1,21 +1,88 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <title>AR Demo</title>
-    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-    <script src="https://rawgit.com/jeromeetienne/AR.js/1.7.1/aframe/build/aframe-ar.js"></script>
-    <style>
-        body { margin: 0; }
-        .arjs-loader { display: none; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<title>AR Plane Detection Demo</title>
+<script src="https://threejs.org/build/three.js"></script>
+<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/MTLLoader.js"></script>
+<script src="https://cdn.rawgit.com/mrdoob/three.js/master/examples/js/loaders/OBJLoader.js"></script>
 </head>
-<body>
-    <a-scene embedded arjs="trackingMethod: best; debugUIEnabled: false;">
-        <a-marker preset="hiro">
-            <a-box position="0 0.5 0" material="color: yellow;"></a-box>
-        </a-marker>
-        <a-entity camera></a-entity>
-    </a-scene>
+<body style="margin: 0; overflow: hidden;">
+<script>
+    let container;
+    let camera, scene, renderer;
+    let controller;
+    let model;
+
+    init();
+    animate();
+
+    function init() {
+        container = document.createElement('div');
+        document.body.appendChild(container);
+
+        scene = new THREE.Scene();
+
+        camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.01, 20);
+
+        renderer = new THREE.WebGLRenderer({ alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        container.appendChild(renderer.domElement);
+
+        // Load model
+        let mtlLoader = new THREE.MTLLoader();
+        mtlLoader.load('sponza.mtl', function (materials) {
+            materials.preload();
+            let objLoader = new THREE.OBJLoader();
+            objLoader.setMaterials(materials);
+            objLoader.load('sponza.obj', function (object) {
+                model = object;
+            });
+        });
+
+        // AR
+        const sessionInit = { optionalFeatures: ['dom-overlay'], domOverlay: { root: container } };
+        navigator.xr.requestSession('immersive-ar', sessionInit).then(onSessionStarted);
+    }
+
+    function onSessionStarted(session) {
+        session.addEventListener('end', onSessionEnded);
+
+        renderer.xr.setSession(session);
+
+        controller = renderer.xr.getController(0);
+        controller.addEventListener('selectstart', onSelect);
+        scene.add(controller);
+
+        session.updateRenderState({ baseLayer: new XRWebGLLayer(session, renderer.getContext()) });
+    }
+
+    function onSelect(event) {
+        const controller = event.target;
+
+        const intersects = controller.intersectObject(plane);
+
+        if (intersects.length > 0) {
+            const intersection = intersects[0];
+
+            model.position.copy(intersection.point);
+            scene.add(model);
+        }
+    }
+
+    function onSessionEnded(event) {
+        event.target.removeEventListener('end', onSessionEnded);
+        document.body.removeChild(container);
+    }
+
+    function animate() {
+        renderer.setAnimationLoop(render);
+    }
+
+    function render() {
+        renderer.render(scene, camera);
+    }
+</script>
 </body>
 </html>
