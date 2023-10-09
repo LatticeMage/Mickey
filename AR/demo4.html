@@ -15,6 +15,15 @@
             }
         });
     </script>
+    <script>
+        AFRAME.registerComponent('cursor-listener-red', {
+            init: function () {
+                this.el.addEventListener('click', function (evt) {
+                    window.location.href = 'https://example-red.com';
+                });
+            }
+        });
+    </script>
 </head>
 <body style="margin: 0; overflow: hidden;">
     <a-scene
@@ -51,11 +60,14 @@
                 class="clickable"
                 gesture-handler
             ></a-entity>
+
+            <a-entity id="ball" geometry="primitive: sphere; radius: 1" material="color: white; shader: flat;" position="0 2 0" cursor-listener></a-entity>
+
+            <a-entity id="red-ball" geometry="primitive: sphere; radius: 1" material="color: red; shader: flat;" position="2 2 0" cursor-listener-red></a-entity>
+
         </a-marker>
 
         <a-light type="directional" color="#ffffff" intensity="1" position="2 10 -3"></a-light>
-
-        <a-entity id="ball" geometry="primitive: sphere; radius: 1" material="color: white; shader: flat;" position="0 2 -5" cursor-listener></a-entity>
         
         <a-entity camera></a-entity>
     </a-scene>
