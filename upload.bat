@@ -1,6 +1,6 @@
-git config --local user.name "PosetMage"
-git config --local user.email "posetmage@gmail.com"
-git remote set-url origin git@POM:PosetMage/Mickey.git
+git config --local user.name "LatticeMage"
+git config --local user.email "latticemage@gmail.com"
+git remote set-url origin git@LM:LatticeMage/Mickey.git
 
 git pull
 git add .
